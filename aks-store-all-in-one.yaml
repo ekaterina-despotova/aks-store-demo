@@ -203,11 +203,11 @@ spec:
                 name: order-service-secrets
           resources:
             requests:
-              cpu: 1m
-              memory: 50Mi
+              cpu: 500m
+              memory: 512Mi
             limits:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 1000m
+              memory: 1024Mi
           startupProbe:
             httpGet:
               path: /health
@@ -293,11 +293,11 @@ spec:
               value: "orders"
           resources:
             requests:
-              cpu: 1m
-              memory: 6Mi
+              cpu: 500m
+              memory: 512Mi
             limits:
-              cpu: 5m
-              memory: 20Mi
+              cpu: 1000m
+              memory: 1024Mi
           startupProbe:
             httpGet:
               path: /health
@@ -358,11 +358,11 @@ spec:
               value: "http://ai-service:5001/"
           resources:
             requests:
-              cpu: 1m
-              memory: 1Mi
+              cpu: 500m
+              memory: 512Mi
             limits:
-              cpu: 2m
-              memory: 20Mi
+              cpu: 1000m
+              memory: 1024Mi
           readinessProbe:
             httpGet:
               path: /health
@@ -415,11 +415,11 @@ spec:
               name: store-front
           resources:
             requests:
-              cpu: 1m
-              memory: 200Mi
+              cpu: 150m
+              memory: 128Mi
             limits:
-              cpu: 1000m
-              memory: 512Mi
+              cpu: 2000m
+              memory: 1024Mi
           startupProbe:
             httpGet:
               path: /health
@@ -478,11 +478,11 @@ spec:
               name: store-admin
           resources:
             requests:
-              cpu: 1m
-              memory: 200Mi
+              cpu: 150m
+              memory: 128Mi
             limits:
-              cpu: 1000m
-              memory: 512Mi
+              cpu: 2000m
+              memory: 1024Mi
           startupProbe:
             httpGet:
               path: /health
