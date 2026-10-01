@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: mongodb
+        carbon.crane.io/protected: "true"
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -23,11 +24,11 @@ spec:
               name: mongodb
           resources:
             requests:
-              cpu: 5m
-              memory: 75Mi
+              cpu: 1500m
+              memory: 1536Mi
             limits:
-              cpu: 25m
-              memory: 1024Mi
+              cpu: "3"
+              memory: 3Gi
           livenessProbe:
             exec:
               command:
@@ -90,6 +91,7 @@ spec:
     metadata:
       labels:
         app: rabbitmq
+        carbon.crane.io/protected: "true"
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -106,11 +108,11 @@ spec:
                 name: rabbitmq-secrets
           resources:
             requests:
-              cpu: 10m
-              memory: 128Mi
+              cpu: 1000m
+              memory: 1Gi
             limits:
-              cpu: 250m
-              memory: 256Mi
+              cpu: 2000m
+              memory: 2Gi
           startupProbe:
             tcpSocket:
               port: 5672
@@ -188,6 +190,7 @@ spec:
     metadata:
       labels:
         app: order-service
+        carbon.crane.io/protected: "true"
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -268,6 +271,7 @@ spec:
     metadata:
       labels:
         app: makeline-service
+        carbon.crane.io/protected: "true"
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -293,11 +297,11 @@ spec:
               value: "orders"
           resources:
             requests:
-              cpu: 500m
-              memory: 512Mi
+              cpu: 1500m
+              memory: 1536Mi
             limits:
-              cpu: 1000m
-              memory: 1024Mi
+              cpu: 3000m
+              memory: 3Gi
           startupProbe:
             httpGet:
               path: /health
@@ -345,6 +349,7 @@ spec:
     metadata:
       labels:
         app: product-service
+        carbon.crane.io/protected: "true"
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -404,6 +409,7 @@ spec:
     metadata:
       labels:
         app: store-front
+        carbon.crane.io/protected: "true"
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -415,11 +421,11 @@ spec:
               name: store-front
           resources:
             requests:
-              cpu: 150m
-              memory: 128Mi
+              cpu: 1000m
+              memory: 1Gi
             limits:
               cpu: 2000m
-              memory: 1024Mi
+              memory: 2Gi
           startupProbe:
             httpGet:
               path: /health
@@ -467,6 +473,7 @@ spec:
     metadata:
       labels:
         app: store-admin
+        carbon.crane.io/protected: "true"
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -478,11 +485,11 @@ spec:
               name: store-admin
           resources:
             requests:
-              cpu: 150m
-              memory: 128Mi
+              cpu: 1000m
+              memory: 1Gi
             limits:
               cpu: 2000m
-              memory: 1024Mi
+              memory: 2Gi
           startupProbe:
             httpGet:
               path: /health
@@ -530,6 +537,7 @@ spec:
     metadata:
       labels:
         app: virtual-customer
+        carbon.crane.io/protected: "true"
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -540,7 +548,7 @@ spec:
             - name: ORDER_SERVICE_URL
               value: http://order-service:3000/
             - name: ORDERS_PER_HOUR
-              value: "100"
+              value: "3600"
           resources:
             requests:
               cpu: 1m
@@ -578,6 +586,7 @@ spec:
     metadata:
       labels:
         app: virtual-worker
+        carbon.crane.io/protected: "true"
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -588,7 +597,7 @@ spec:
             - name: MAKELINE_SERVICE_URL
               value: http://makeline-service:3001
             - name: ORDERS_PER_HOUR
-              value: "100"
+              value: "1800"
           resources:
             requests:
               cpu: 1m
@@ -612,3 +621,39 @@ spec:
             failureThreshold: 5
             initialDelaySeconds: 10
             periodSeconds: 10
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-test
+  labels:
+    app: mongodb-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-test
+  template:
+    metadata:
+      labels:
+        app: mongodb-test
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: mongodb-test
+          image: mcr.microsoft.com/mirror/docker/library/mongo:4.2
+          args:
+            - "--port"
+            - "27018"
+          ports:
+            - containerPort: 27018
+              name: mongodb-test
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
