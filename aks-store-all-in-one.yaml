@@ -24,11 +24,11 @@ spec:
               name: mongodb
           resources:
             requests:
-              cpu: 500m
-              memory: 1536Mi
+              cpu: 150m
+              memory: 256Mi
             limits:
-              cpu: "2"
-              memory: 3Gi
+              cpu: 500m
+              memory: 1Gi
           livenessProbe:
             exec:
               command:
@@ -109,10 +109,10 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 1Gi
+              memory: 256Mi
             limits:
-              cpu: 2000m
-              memory: 2Gi
+              cpu: 500m
+              memory: 1Gi
           startupProbe:
             tcpSocket:
               port: 5672
@@ -207,10 +207,10 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 512Mi
+              memory: 128Mi
             limits:
-              cpu: 1000m
-              memory: 1024Mi
+              cpu: 300m
+              memory: 512Mi
           startupProbe:
             httpGet:
               path: /health
@@ -298,10 +298,10 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 1536Mi
+              memory: 128Mi
             limits:
-              cpu: 3000m
-              memory: 3Gi
+              cpu: 300m
+              memory: 512Mi
           startupProbe:
             httpGet:
               path: /health
@@ -364,10 +364,10 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 512Mi
+              memory: 128Mi
             limits:
-              cpu: 1000m
-              memory: 1024Mi
+              cpu: 300m
+              memory: 512Mi
           readinessProbe:
             httpGet:
               path: /health
@@ -422,10 +422,10 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 1Gi
+              memory: 128Mi
             limits:
-              cpu: 2000m
-              memory: 2Gi
+              cpu: 300m
+              memory: 512Mi
           startupProbe:
             httpGet:
               path: /health
@@ -486,10 +486,10 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 1Gi
+              memory: 128Mi
             limits:
-              cpu: 2000m
-              memory: 2Gi
+              cpu: 300m
+              memory: 512Mi
           startupProbe:
             httpGet:
               path: /health
@@ -652,8 +652,8 @@ spec:
               name: mongodb-test
           resources:
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 50m
+              memory: 128Mi
             limits:
-              cpu: 500m
-              memory: 512Mi
+              cpu: 250m
+              memory: 256Mi
