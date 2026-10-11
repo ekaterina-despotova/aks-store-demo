@@ -108,8 +108,8 @@ metadata:
   name: locust-web
   namespace: loadgen
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: locust-master
   ports:
-    - { name: web, port: 8089, targetPort: 8089, nodePort: 30089 }
+    - { name: web, port: 8089, targetPort: 8089 }
