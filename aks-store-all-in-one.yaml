@@ -4,7 +4,7 @@ metadata:
   name: mongodb
 spec:
   serviceName: mongodb
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: mongodb
@@ -24,10 +24,10 @@ spec:
               name: mongodb
           resources:
             requests:
-              cpu: 1500m
+              cpu: 500m
               memory: 1536Mi
             limits:
-              cpu: "3"
+              cpu: "2"
               memory: 3Gi
           livenessProbe:
             exec:
@@ -108,7 +108,7 @@ spec:
                 name: rabbitmq-secrets
           resources:
             requests:
-              cpu: 1000m
+              cpu: 100m
               memory: 1Gi
             limits:
               cpu: 2000m
@@ -182,7 +182,7 @@ kind: Deployment
 metadata:
   name: order-service
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: order-service
@@ -206,7 +206,7 @@ spec:
                 name: order-service-secrets
           resources:
             requests:
-              cpu: 500m
+              cpu: 50m
               memory: 512Mi
             limits:
               cpu: 1000m
@@ -263,7 +263,7 @@ kind: Deployment
 metadata:
   name: makeline-service
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: makeline-service
@@ -297,7 +297,7 @@ spec:
               value: "orders"
           resources:
             requests:
-              cpu: 1500m
+              cpu: 50m
               memory: 1536Mi
             limits:
               cpu: 3000m
@@ -341,7 +341,7 @@ kind: Deployment
 metadata:
   name: product-service
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: product-service
@@ -363,7 +363,7 @@ spec:
               value: "http://ai-service:5001/"
           resources:
             requests:
-              cpu: 500m
+              cpu: 50m
               memory: 512Mi
             limits:
               cpu: 1000m
@@ -421,7 +421,7 @@ spec:
               name: store-front
           resources:
             requests:
-              cpu: 1000m
+              cpu: 50m
               memory: 1Gi
             limits:
               cpu: 2000m
@@ -485,7 +485,7 @@ spec:
               name: store-admin
           resources:
             requests:
-              cpu: 1000m
+              cpu: 50m
               memory: 1Gi
             limits:
               cpu: 2000m
@@ -548,7 +548,7 @@ spec:
             - name: ORDER_SERVICE_URL
               value: http://order-service:3000/
             - name: ORDERS_PER_HOUR
-              value: "3600"
+              value: "0"
           resources:
             requests:
               cpu: 1m
@@ -597,7 +597,7 @@ spec:
             - name: MAKELINE_SERVICE_URL
               value: http://makeline-service:3001
             - name: ORDERS_PER_HOUR
-              value: "1800"
+              value: "0"
           resources:
             requests:
               cpu: 1m

@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: loadgen
+
+---
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust-master
+  namespace: loadgen
+  labels:
+    app: locust-master
+    carbon.crane.io/protected: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locust-master
+  template:
+    metadata:
+      labels:
+        app: locust-master
+        carbon.crane.io/protected: "true"
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: locust
+          image: locustio/locust:2.31.8
+          args:
+            - "-f"
+            - "/mnt/locust/locustfile.py"
+            - "--master"
+          ports:
+            - { containerPort: 8089, name: web }
+            - { containerPort: 5557, name: comm }
+          volumeMounts:
+            - name: locustfile
+              mountPath: /mnt/locust
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { cpu: 500m, memory: 256Mi }
+      volumes:
+        - name: locustfile
+          configMap:
+            name: locustfile
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust-worker
+  namespace: loadgen
+  labels:
+    app: locust-worker
+    carbon.crane.io/protected: "true"
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: locust-worker
+  template:
+    metadata:
+      labels:
+        app: locust-worker
+        carbon.crane.io/protected: "true"
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: locust
+          image: locustio/locust:2.31.8
+          args:
+            - "-f"
+            - "/mnt/locust/locustfile.py"
+            - "--worker"
+            - "--master-host"
+            - "locust-master.loadgen"
+          volumeMounts:
+            - name: locustfile
+              mountPath: /mnt/locust
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { cpu: "2", memory: 512Mi }
+      volumes:
+        - name: locustfile
+          configMap:
+            name: locustfile
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: locust-master
+  namespace: loadgen
+spec:
+  selector:
+    app: locust-master
+  ports:
+    - { name: web,  port: 8089, targetPort: 8089 }
+    - { name: comm, port: 5557, targetPort: 5557 }
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: locust-web
+  namespace: loadgen
+spec:
+  type: NodePort
+  selector:
+    app: locust-master
+  ports:
+    - { name: web, port: 8089, targetPort: 8089, nodePort: 30089 }

@@ -1,0 +1,105 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leftover-test1
+  namespace: pets
+  labels: { app: leftover-test1, role: leftover-idle }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: leftover-test1 } }
+  template:
+    metadata:
+      labels: { app: leftover-test1, role: leftover-idle }
+    spec:
+      containers:
+        - name: stress
+          image: alexeiled/stress-ng:latest
+          args: ["--cpu", "1", "--cpu-load", "65"]
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits:   { cpu: 100m, memory: 128Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leftover-test2
+  namespace: pets
+  labels: { app: leftover-test2, role: leftover-idle }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: leftover-test2 } }
+  template:
+    metadata:
+      labels: { app: leftover-test2, role: leftover-idle }
+    spec:
+      containers:
+        - name: stress
+          image: alexeiled/stress-ng:latest
+          args: ["--cpu", "1", "--cpu-load", "65"]
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits:   { cpu: 100m, memory: 128Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leftover-test3
+  namespace: pets
+  labels: { app: leftover-test3, role: leftover-idle }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: leftover-test3 } }
+  template:
+    metadata:
+      labels: { app: leftover-test3, role: leftover-idle }
+    spec:
+      containers:
+        - name: stress
+          image: alexeiled/stress-ng:latest
+          args: ["--cpu", "1", "--cpu-load", "65"]
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits:   { cpu: 100m, memory: 128Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leftover-test4
+  namespace: pets
+  labels: { app: leftover-test4, role: leftover-idle }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: leftover-test4 } }
+  template:
+    metadata:
+      labels: { app: leftover-test4, role: leftover-idle }
+    spec:
+      containers:
+        - name: stress
+          image: alexeiled/stress-ng:latest
+          args: ["--cpu", "1", "--cpu-load", "65"]
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits:   { cpu: 100m, memory: 128Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leftover-test5
+  namespace: pets
+  labels: { app: leftover-test5, role: leftover-idle }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: leftover-test5 } }
+  template:
+    metadata:
+      labels: { app: leftover-test5, role: leftover-idle }
+    spec:
+      containers:
+        - name: stress
+          image: alexeiled/stress-ng:latest
+          args: ["--cpu", "1", "--cpu-load", "65"]
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits:   { cpu: 100m, memory: 128Mi }

@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: order-janitor
+  namespace: pets
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: order-janitor
+  namespace: pets
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: order-janitor
+  namespace: pets
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: order-janitor
+subjects:
+- kind: ServiceAccount
+  name: order-janitor
+  namespace: pets
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-janitor
+  namespace: pets
+  labels:
+    app: order-janitor
+    carbon.crane.io/protected: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-janitor
+  template:
+    metadata:
+      labels:
+        app: order-janitor
+        carbon.crane.io/protected: "true"
+    spec:
+      serviceAccountName: order-janitor
+      containers:
+        - name: janitor
+          image: alpine/k8s:1.30.0
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              # Keep the newest CAP processed orders per instance; delete the rest.
+              # Small, frequent trims so the collection size stays ~constant (no sawtooth).
+              CAP=${ORDER_CAP:-2000}
+              INTERVAL=${TRIM_INTERVAL:-5}
+              echo "order-janitor: cap=$CAP interval=${INTERVAL}s"
+              TRIM='var cap='"$CAP"'; var total=db.orders.countDocuments({}); if(total>cap){var excess=total-cap; var ids=db.orders.find({},{_id:1}).sort({_id:1}).limit(excess).toArray().map(function(d){return d._id;}); if(ids.length>0){db.orders.deleteMany({_id:{$in:ids}});}}'
+              while true; do
+                # discover mongodb pods dynamically so it works for any replica count
+                PODS=$(kubectl get pods -n pets -l app=mongodb -o jsonpath='{.items[*].metadata.name}')
+                for pod in $PODS; do
+                  kubectl exec -n pets "$pod" -c mongodb -- mongo orderdb --quiet --eval "$TRIM" 2>/dev/null || true
+                done
+                sleep "$INTERVAL"
+              done
+          env:
+            - name: ORDER_CAP
+              value: "2000"
+            - name: TRIM_INTERVAL
+              value: "5"
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits:   { cpu: 200m, memory: 128Mi }
