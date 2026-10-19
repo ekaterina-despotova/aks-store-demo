@@ -4,7 +4,7 @@ metadata:
   name: mongodb
 spec:
   serviceName: mongodb
-  replicas: 5
+  replicas: 3
   selector:
     matchLabels:
       app: mongodb
@@ -27,7 +27,7 @@ spec:
               cpu: 150m
               memory: 256Mi
             limits:
-              cpu: 500m
+              cpu: 2500m
               memory: 1Gi
           livenessProbe:
             exec:
@@ -512,115 +512,115 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 3
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: store-admin
-spec:
-  ports:
-    - port: 80
-      targetPort: 8081
-  selector:
-    app: store-admin
-  type: ClusterIP
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: virtual-customer
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: virtual-customer
-  template:
-    metadata:
-      labels:
-        app: virtual-customer
-        carbon.crane.io/protected: "true"
-    spec:
-      nodeSelector:
-        "kubernetes.io/os": linux
-      containers:
-        - name: virtual-customer
-          image: ghcr.io/azure-samples/aks-store-demo/virtual-customer:2.1.0
-          env:
-            - name: ORDER_SERVICE_URL
-              value: http://order-service:3000/
-            - name: ORDERS_PER_HOUR
-              value: "0"
-          resources:
-            requests:
-              cpu: 1m
-              memory: 1Mi
-            limits:
-              cpu: 2m
-              memory: 20Mi
-          readinessProbe:
-            exec:
-              command:
-                - cat
-                - /proc/1/status
-            failureThreshold: 3
-            initialDelaySeconds: 3
-            periodSeconds: 5
-          livenessProbe:
-            exec:
-              command:
-                - cat
-                - /proc/1/status
-            failureThreshold: 5
-            initialDelaySeconds: 10
-            periodSeconds: 10
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: virtual-worker
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: virtual-worker
-  template:
-    metadata:
-      labels:
-        app: virtual-worker
-        carbon.crane.io/protected: "true"
-    spec:
-      nodeSelector:
-        "kubernetes.io/os": linux
-      containers:
-        - name: virtual-worker
-          image: ghcr.io/azure-samples/aks-store-demo/virtual-worker:2.1.0
-          env:
-            - name: MAKELINE_SERVICE_URL
-              value: http://makeline-service:3001
-            - name: ORDERS_PER_HOUR
-              value: "0"
-          resources:
-            requests:
-              cpu: 1m
-              memory: 1Mi
-            limits:
-              cpu: 2m
-              memory: 20Mi
-          readinessProbe:
-            exec:
-              command:
-                - cat
-                - /proc/1/status
-            failureThreshold: 3
-            initialDelaySeconds: 3
-            periodSeconds: 5
-          livenessProbe:
-            exec:
-              command:
-                - cat
-                - /proc/1/status
-            failureThreshold: 5
-            initialDelaySeconds: 10
-            periodSeconds: 10
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: store-admin
+# spec:
+#   ports:
+#     - port: 80
+#       targetPort: 8081
+#   selector:
+#     app: store-admin
+#   type: ClusterIP
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: virtual-customer
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: virtual-customer
+#   template:
+#     metadata:
+#       labels:
+#         app: virtual-customer
+#         carbon.crane.io/protected: "true"
+#     spec:
+#       nodeSelector:
+#         "kubernetes.io/os": linux
+#       containers:
+#         - name: virtual-customer
+#           image: ghcr.io/azure-samples/aks-store-demo/virtual-customer:2.1.0
+#           env:
+#             - name: ORDER_SERVICE_URL
+#               value: http://order-service:3000/
+#             - name: ORDERS_PER_HOUR
+#               value: "0"
+#           resources:
+#             requests:
+#               cpu: 1m
+#               memory: 1Mi
+#             limits:
+#               cpu: 2m
+#               memory: 20Mi
+#           readinessProbe:
+#             exec:
+#               command:
+#                 - cat
+#                 - /proc/1/status
+#             failureThreshold: 3
+#             initialDelaySeconds: 3
+#             periodSeconds: 5
+#           livenessProbe:
+#             exec:
+#               command:
+#                 - cat
+#                 - /proc/1/status
+#             failureThreshold: 5
+#             initialDelaySeconds: 10
+#             periodSeconds: 10
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: virtual-worker
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: virtual-worker
+#   template:
+#     metadata:
+#       labels:
+#         app: virtual-worker
+#         carbon.crane.io/protected: "true"
+#     spec:
+#       nodeSelector:
+#         "kubernetes.io/os": linux
+#       containers:
+#         - name: virtual-worker
+#           image: ghcr.io/azure-samples/aks-store-demo/virtual-worker:2.1.0
+#           env:
+#             - name: MAKELINE_SERVICE_URL
+#               value: http://makeline-service:3001
+#             - name: ORDERS_PER_HOUR
+#               value: "0"
+#           resources:
+#             requests:
+#               cpu: 1m
+#               memory: 1Mi
+#             limits:
+#               cpu: 2m
+#               memory: 20Mi
+#           readinessProbe:
+#             exec:
+#               command:
+#                 - cat
+#                 - /proc/1/status
+#             failureThreshold: 3
+#             initialDelaySeconds: 3
+#             periodSeconds: 5
+#           livenessProbe:
+#             exec:
+#               command:
+#                 - cat
+#                 - /proc/1/status
+#             failureThreshold: 5
+#             initialDelaySeconds: 10
+#             periodSeconds: 10
 ---
 
 apiVersion: apps/v1
