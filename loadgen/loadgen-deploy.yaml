@@ -40,7 +40,7 @@ spec:
             - name: locustfile
               mountPath: /mnt/locust
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
+            requests: { cpu: 20m, memory: 128Mi }   # was 100m; master is coordination-only (~3m observed)
             limits:   { cpu: 500m, memory: 256Mi }
       volumes:
         - name: locustfile
